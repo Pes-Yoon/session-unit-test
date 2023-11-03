@@ -10,14 +10,12 @@ import java.util.*
 class UserService(
     private val repository: UserRepository,
     private val mailSender: JavaMailSender,
+    private val userFactory: UserFactory,
 ) {
 
-    fun create(name: String, email: String) {
-        repository.save(
-            User(
-                name = validateUserName(name),   // if invalid, throw exception
-                email = validateEmail(email),       // if invalid, throw exception
-            )
+    fun create(name: String, email: String): User {
+        return repository.save(
+            userFactory.create(name, email)
         )
     }
 
@@ -28,23 +26,6 @@ class UserService(
             .let { repository.save(it) }
     }
 
-    private fun fetchBlacklist(): List<String> {
-        return listOf("null", "18x")
-    }
-
-    fun validateUserName(name: String): String {
-        if (name in fetchBlacklist()) throw Exception("invalid name")
-        if (name.length < 3) throw Exception("too short name")
-        return name
-    }
-
-    fun validateEmail(email: String): String {
-        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$".toRegex()
-        if (emailRegex.matches(email).not()) throw Exception("invalid email")
-
-        return email
-    }
-
     fun sendConfirmationEmail(userId: Int) {
         repository.findById(userId)
             .orElseThrow()
@@ -52,6 +33,7 @@ class UserService(
             .let { repository.save(it) }
             .let { sendSimpleMesssage(it.email, "user confirmation", "http://something.com?code=${it.confirmationCode}") }
     }
+
 
     fun sendSimpleMesssage(
         to: String,
