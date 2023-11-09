@@ -34,8 +34,7 @@ class UserService(
             .let { sendSimpleMesssage(it.email, "user confirmation", "http://something.com?code=${it.confirmationCode}") }
     }
 
-
-    fun sendSimpleMesssage(
+    private fun sendSimpleMesssage(
         to: String,
         subject: String,
         text: String
