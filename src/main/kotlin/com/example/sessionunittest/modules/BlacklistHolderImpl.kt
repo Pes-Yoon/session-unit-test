@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 class BlacklistHolderImpl: BlacklistHolder {
 
     override fun contains(name: String): Boolean {
-        return name in listOf("null", "master")
+        return name in listOf("null", "admin")
     }
 
 }

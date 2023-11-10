@@ -6,7 +6,11 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessagePreparator
 import java.io.InputStream
 
-class FakeJavaMailSender: JavaMailSender {
+class MockJavaMailSender: JavaMailSender {
+
+    lateinit var to: String
+    lateinit var text: String
+
     override fun send(mimeMessage: MimeMessage) {
         TODO("Not yet implemented")
     }
@@ -24,7 +28,8 @@ class FakeJavaMailSender: JavaMailSender {
     }
 
     override fun send(simpleMessage: SimpleMailMessage) {
-        TODO("Not yet implemented")
+        to = simpleMessage.to?.first() ?: ""
+        text = simpleMessage.text.toString()
     }
 
     override fun send(vararg simpleMessages: SimpleMailMessage?) {

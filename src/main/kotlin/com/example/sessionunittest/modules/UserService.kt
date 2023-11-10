@@ -11,6 +11,7 @@ class UserService(
     private val repository: UserRepository,
     private val mailSender: JavaMailSender,
     private val userFactory: UserFactory,
+    private val uuidHolder: UUIDHolder,
 ) {
 
     fun create(name: String, email: String): User {
@@ -19,17 +20,17 @@ class UserService(
         )
     }
 
-    fun login(userId: Int) {
+    fun login(userId: Int, now: LocalDateTime = LocalDateTime.now()) {
         repository.findById(userId)
             .orElseThrow()
-            .copy(lastLoginAt = LocalDateTime.now())
+            .copy(lastLoginAt = now)
             .let { repository.save(it) }
     }
 
     fun sendConfirmationEmail(userId: Int) {
         repository.findById(userId)
             .orElseThrow()
-            .copy(confirmationCode = UUID.randomUUID().toString())
+            .copy(confirmationCode = uuidHolder.newUuid())
             .let { repository.save(it) }
             .let { sendSimpleMesssage(it.email, "user confirmation", "http://something.com?code=${it.confirmationCode}") }
     }
