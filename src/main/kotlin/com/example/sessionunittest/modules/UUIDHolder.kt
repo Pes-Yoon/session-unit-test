@@ -4,14 +4,15 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 interface UUIDHolder {
-    fun newUuid(): String
+
+    fun newUUID(): String
 
 }
 
 @Component
-class UUidHolderImpl: UUIDHolder {
+class UUIDHolderImpl: UUIDHolder {
 
-    override fun newUuid(): String {
+    override fun newUUID(): String {
         return UUID.randomUUID().toString()
     }
 

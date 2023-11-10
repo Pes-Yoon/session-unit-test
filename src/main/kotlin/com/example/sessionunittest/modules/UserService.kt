@@ -4,7 +4,6 @@ import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.*
 
 @Service
 class UserService(
@@ -30,7 +29,7 @@ class UserService(
     fun sendConfirmationEmail(userId: Int) {
         repository.findById(userId)
             .orElseThrow()
-            .copy(confirmationCode = uuidHolder.newUuid())
+            .copy(confirmationCode = uuidHolder.newUUID())
             .let { repository.save(it) }
             .let { sendSimpleMesssage(it.email, "user confirmation", "http://something.com?code=${it.confirmationCode}") }
     }
